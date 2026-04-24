@@ -10,7 +10,7 @@ class Move
 
     public:
         Move();
-        Move(int _row, int _col)
+        Move(int _row, int _col);
         ~Move();
 
         int getRow() { return m_row; }
