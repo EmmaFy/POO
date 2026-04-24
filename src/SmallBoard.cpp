@@ -17,3 +17,15 @@ bool SmallBoard::play(int pos, Cell p) {
 Cell SmallBoard::getWinner() const {
     return winner;
 }
+
+bool SmallBoard::isComplete() const {
+    return false;
+}
+
+std::vector<int> SmallBoard::getLegalMoves() const {
+    return std::vector<int>();
+}
+
+SmallBoard SmallBoard::clone() const {
+    return SmallBoard();
+}

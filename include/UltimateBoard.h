@@ -1,6 +1,11 @@
 #ifndef ULTIMATEBOARD_H
 #define ULTIMATEBOARD_H
 
+#include <vector>
+#include "SmallBoard.h"
+#include "Cell.h"
+
+class Move;
 
 class UltimateBoard
 {
@@ -23,6 +28,12 @@ class UltimateBoard
         void setResult(SmallBoard val) { m_result = val; }
         Cell getCurrentPlayer() { return m_currentPlayer; }
         void setCurrentPlayer(Cell val) { m_currentPlayer = val; }
+
+        bool play(Move move);
+        std::vector<Move> getLegalMoves() const;
+        Cell getWinner() const;
+        UltimateBoard clone() const;
+        bool isFinished() const;
 };
 
 #endif // ULTIMATEBOARD_H
