@@ -29,6 +29,7 @@ class UltimateBoard
         Cell getCurrentPlayer() { return m_currentPlayer; }
         void setCurrentPlayer(Cell val) { m_currentPlayer = val; }
 
+        // Methods
         bool play(Move move);
         std::vector<Move> getLegalMoves() const;
         Cell getWinner() const;

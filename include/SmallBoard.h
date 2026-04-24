@@ -4,23 +4,23 @@
 #include <vector>
 #include "Cell.h"
 
-class Move;
+class GameMove;
 
 class SmallBoard
 {
     private:
-        Cells m_cells;
-        Cells m_winner;
+        Cell m_cells;
+        Cell m_winner;
 
     public:
         SmallBoard();
         ~SmallBoard();
 
         // Getter Setter
-        Cells getCells() { return m_cells; }
-        void setCells(Cells val) { m_cells = val; }
-        Cells getWinner() { return m_winner; }
-        void setWinner(Cells val) { m_winner = val; }
+        Cell getCells() { return m_cells; }
+        void setCells(Cell val) { m_cells = val; }
+        Cell getWinner() { return m_winner; }
+        void setWinner(Cell val) { m_winner = val; }
 
         // Methods
         bool play(GameMove move, Cell p);
