@@ -16,11 +16,13 @@ class SmallBoard
         SmallBoard();
         ~SmallBoard();
 
+        // Getter Setter
         Cells getCells() { return m_cells; }
         void setCells(Cells val) { m_cells = val; }
         Cells getWinner() { return m_winner; }
         void setWinner(Cells val) { m_winner = val; }
 
+        // Methods
         bool play(GameMove move, Cell p);
         Cell getWinner() const;
         bool isComplete() const;
