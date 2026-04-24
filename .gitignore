@@ -1,0 +1,17 @@
+# Artefacts de compilation C/C++
+*.o
+*.obj
+*.out
+*.exe
+bin/
+obj/
+
+# Fichiers de configuration utilisateur et de session Code::Blocks
+*.depend
+*.layout
+*.bmarks
+*.cbp.mak
+
+# Fichiers temporaires de l'OS (Windows)
+Thumbs.db
+desktop.ini
