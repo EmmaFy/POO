@@ -1,15 +1,12 @@
 #ifndef RANDOMSTRATEGY_H
 #define RANDOMSTRATEGY_H
-#include "Move.h"
-#include "Ultimateboard.h"
 
-
-class RandomStrategy
+class RandomStrategy : public IStrategy
 {
     public:
         RandomStrategy();
         ~RandomStrategy();
-        Move chooseMove(UltimateBoard.board);
+        Move chooseMove(const UltimateBoard& board)
 };
 
 #endif // RANDOMSTRATEGY_H
