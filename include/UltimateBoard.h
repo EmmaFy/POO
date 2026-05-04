@@ -3,9 +3,6 @@
 
 #include <vector>
 #include "SmallBoard.h"
-#include "Cell.h"
-
-class Move;
 
 class UltimateBoard
 {
