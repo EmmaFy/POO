@@ -13,6 +13,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
+					<Add directory="include" />
 				</Compiler>
 			</Target>
 			<Target title="Release">
@@ -22,6 +23,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-O3" />
+					<Add directory="include" />
 				</Compiler>
 			</Target>
 		</Build>
@@ -37,12 +39,16 @@
 			<Add option="allegro-5.2.dll" />
 			<Add library="./libUTTTLib.a" />
 		</Linker>
+		<Unit filename="include/Cell.h" />
+		<Unit filename="include/Move.h" />
+		<Unit filename="include/SmallBoard.h" />
+		<Unit filename="include/UltimateBoard.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="main.h" />
-		<Extensions>
-			<code_completion />
-			<envvars />
-			<debugger />
-		</Extensions>
+		<Unit filename="src/Cell.cpp" />
+		<Unit filename="src/Move.cpp" />
+		<Unit filename="src/SmallBoard.cpp" />
+		<Unit filename="src/UltimateBoard.cpp" />
+		<Extensions />
 	</Project>
 </CodeBlocks_project_file>
