@@ -18,6 +18,7 @@ int main()
             std::cerr << "IA move " << gameMove.row << " " << gameMove.col << std::endl;
 
             // Send your move
+            GameMove myMove=RandomStrategy();
             std::cerr << "Send move " << myMove.row << " " << myMove.col << std::endl;
             game.setMove(myMove);
         }

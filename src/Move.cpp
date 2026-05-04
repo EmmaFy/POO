@@ -6,7 +6,7 @@ Move::Move()
     m_col = 0;
 }
 
-Move::Move(int _rox, int _col)
+Move::Move(int _row, int _col)
 {
     m_row = _row;
     m_col = _col;
