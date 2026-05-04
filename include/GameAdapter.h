@@ -1,6 +1,8 @@
 #ifndef GAMEADAPTER_H
 #define GAMEADAPTER_H
 
+#include "UltimateBoard.h"
+#include "IStrategy.h"
 
 class GameAdapter
 {

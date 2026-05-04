@@ -10,9 +10,9 @@ RandomStrategy::~RandomStrategy()
     //dtor
 }
 
-GameMove RandomStrategy::RandomStrategy(board)
+Move RandomStrategy::RandomStrategy(board)
 {
-    GameMove move;
+    Move move;
     move.row = std::rand() % 9;
     move.col = std::rand() % 9;
     return move;

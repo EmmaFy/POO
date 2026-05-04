@@ -15,6 +15,6 @@ void GameAdapter::onOpponentMove(GameMove){
 
 }
 
-GameMove GameAdapter::ComputeOurMove(){
+Move GameAdapter::ComputeOurMove(){
 
 }

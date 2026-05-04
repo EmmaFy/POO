@@ -10,6 +10,7 @@ IStrategy::~IStrategy()
     //dtor
 }
 
-Move chooseMove(board){
+Move chooseMove(board)
+{
 
 }
