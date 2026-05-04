@@ -6,7 +6,7 @@ class RandomStrategy : public IStrategy
     public:
         RandomStrategy();
         ~RandomStrategy();
-        Move chooseMove(const UltimateBoard& board)
+        Move chooseMove(const UltimateBoard& board);
 };
 
 #endif // RANDOMSTRATEGY_H

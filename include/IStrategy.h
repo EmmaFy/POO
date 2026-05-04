@@ -1,21 +1,13 @@
-#ifndef ISTRATEGY_H
-#define ISTRATEGY_H
+#ifndef STRATEGY_H
+#define STRATEGY_H
 
-#include "UltimateBoard.h"
 #include "Move.h"
 
+class UltimateBoard; // Forward declaration pour éviter les inclusions croisées
 
-class IStrategy
-{
-    public:
-        IStrategy();
-        ~IStrategy();
-
-        Move chooseMove(board);
-
-    protected:
-
-    private:
+struct IStrategy {
+    virtual ~IStrategy();
+    virtual Move chooseMove(const UltimateBoard& board) = 0;
 };
 
-#endif // ISTRATEGY_H
+#endif

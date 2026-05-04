@@ -4,25 +4,16 @@
 #include "UltimateBoard.h"
 #include "IStrategy.h"
 
-class GameAdapter
-{
-    public:
-        GameAdapter();
-        ~GameAdapter();
+class GameAdapter {
+private:
+    UltimateBoard board;   // L'état actuel du jeu
+    IStrategy* strategy;    // Pointeur vers l'IA choisie (Random, Minimax, etc.)
 
-        UltimateBoard Getboard() { return board; }
-        void Setboard(UltimateBoard val) { board = val; }
-        IStrategy* Getstrategy() { return strategy; }
-        void Setstrategy(IStrategy* val) { strategy = val; }
-
-        void onOpponentMove(GameMove);
-        GameMove ComputeOurMove();
-
-    protected:
-
-    private:
-        UltimateBoard board;
-        IStrategy* strategy;
+public:
+    GameAdapter(Strategy* s);
+    void onOpponentMove(Move m);
+    Move computeOurMove();
+    const UltimateBoard& getBoard() const { return board; }
 };
 
-#endif // GAMEADAPTER_H
+#endif

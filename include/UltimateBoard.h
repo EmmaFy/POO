@@ -3,6 +3,7 @@
 
 #include <vector>
 #include "SmallBoard.h"
+#include "Move.h"
 
 class UltimateBoard
 {

@@ -1,20 +1,21 @@
 #include "GameAdapter.h"
 
-GameAdapter::GameAdapter()
-{
-    UltimateBoard board;
-    IStrategy* strategy;
+GameAdapter::GameAdapter(Strategy* s) : strategy(s) {
 }
 
-GameAdapter::~GameAdapter()
-{
-    //dtor
+void GameAdapter::onOpponentMove(Move m) {
+    // On met à jour notre plateau local avec le coup de l'adversaire
+    // pour que l'IA sache où elle en est.
+    board.play(m);
 }
 
-void GameAdapter::onOpponentMove(GameMove){
+Move GameAdapter::computeOurMove() {
+    if (strategy == nullptr) {
+        return {-1, -1}; // Sécurité
+    }
 
-}
+    Move myMove = strategy->chooseMove(board);
+    board.play(myMove);
 
-Move GameAdapter::ComputeOurMove(){
-
+    return myMove;
 }

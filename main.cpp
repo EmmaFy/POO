@@ -18,11 +18,13 @@ int main()
             std::cerr << "IA move " << gameMove.row << " " << gameMove.col << std::endl;
 
             // Send your move
+            Strategy* myIA = new RandomStrategy();
+            GameAdapter adapter(myIA);
             GameMove myMove=RandomStrategy();
             std::cerr << "Send move " << myMove.row << " " << myMove.col << std::endl;
             game.setMove(myMove);
         }
     }
-
+    delete myIA;
     return 0;
 }
