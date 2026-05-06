@@ -2,12 +2,12 @@
 #define GAMEADAPTER_H
 
 #include "UltimateBoard.h"
-#include "IStrategy.h"
+#include "Strategy.h"
 
 class GameAdapter {
 private:
     UltimateBoard board;   // L'état actuel du jeu
-    IStrategy* strategy;    // Pointeur vers l'IA choisie (Random, Minimax, etc.)
+    Strategy* strategy;    // Pointeur vers l'IA choisie (Random, Minimax, etc.)
 
 public:
     GameAdapter(Strategy* s);

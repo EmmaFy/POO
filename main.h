@@ -40,7 +40,7 @@ struct IGame {
     virtual void setMove(const GameMove& move) = 0;
     virtual void initialize(unsigned int nbGame, Level level, Mode mode, bool alwaysPlayFirst, const std::string& alias = "Player") = 0;
 
-    UltimateBoard()
+    UltimateBoard();
 };
 
 extern IGame& game;

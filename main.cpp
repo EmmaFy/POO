@@ -1,5 +1,8 @@
 #include <iostream>
 #include "main.h"
+#include "Strategy.h"
+#include "RandomStrategy.h"
+#include "GameAdapter.h"
 
 int main()
 {
@@ -24,7 +27,8 @@ int main()
             std::cerr << "Send move " << myMove.row << " " << myMove.col << std::endl;
             game.setMove(myMove);
         }
+        delete myIA;
     }
-    delete myIA;
+
     return 0;
 }

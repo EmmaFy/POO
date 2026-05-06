@@ -1,7 +1,10 @@
 #ifndef RANDOMSTRATEGY_H
 #define RANDOMSTRATEGY_H
 
-class RandomStrategy : public IStrategy
+#include "Strategy.h"
+#include "Move.h"
+
+class RandomStrategy : public Strategy
 {
     public:
         RandomStrategy();
