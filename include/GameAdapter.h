@@ -7,10 +7,16 @@
 class GameAdapter {
 private:
     UltimateBoard board;   // L'état actuel du jeu
-    Strategy* strategy;    // Pointeur vers l'IA choisie (Random, Minimax, etc.)
+    Strategy* strategy;    // Pointeur vers l'IA choisie (Random, Minimax ou Monte Carlo)
 
 public:
     GameAdapter(Strategy* s);
+
+    // Getter Setter
+    UltimateBoard getBoard() const;
+    void setBoard(UltimateBoard board);
+
+    // Methods
     void onOpponentMove(Move m);
     Move computeOurMove();
     const UltimateBoard& getBoard() const { return board; }

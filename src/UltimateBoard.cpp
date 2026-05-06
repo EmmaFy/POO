@@ -58,7 +58,7 @@ bool UltimateBoardisFinished() const
 
 bool UltimateBoard::play(Move m)
 {
-    // 1. Vérifier si le mouvement est dans la grille forcée
+    // Vérifier si le mouvement est dans la grille forcée
     int bR = m.row / 3;
     int bC = m.col / 3;
     int localR = m.row % 3;
@@ -67,15 +67,15 @@ bool UltimateBoard::play(Move m)
     if (forcedBoardRow != -1 && (bR != forcedBoardRow || bC != forcedBoardCol)) return false;
     if (boards[bR][bC].getWinner() != Cell::Empty) return false;
 
-    // 2. Jouer le coup
+    // Jouer le coup
     if (!boards[bR][bC].play(localR, localC, currentPlayer)) return false;
 
-    // 3. Mettre à jour la grille de résultat globale
+    // Mettre à jour la grille de résultat globale
     if (boards[bR][bC].getWinner() != Cell::Empty) {
         result.play(bR, bC, boards[bR][bC].getWinner());
     }
 
-    // 4. Déterminer la prochaine grille forcée
+    // Déterminer la prochaine grille forcée
     if (boards[localR][localC].getWinner() == Cell::Empty && !boards[localR][localC].isComplete()) {
         forcedBoardRow = localR;
         forcedBoardCol = localC;
@@ -84,7 +84,7 @@ bool UltimateBoard::play(Move m)
         forcedBoardCol = -1;
     }
 
-    // 5. Changer de joueur
+    // Changer de joueur
     currentPlayer = (currentPlayer == Cell::X) ? Cell::O : Cell::X;
     return true;
 }
