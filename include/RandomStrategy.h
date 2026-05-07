@@ -4,7 +4,7 @@
 #include "Strategy.h"
 #include "Move.h"
 
-class RandomStrategy : public Strategy
+class RandomStrategy : public  Strategy
 {
     public:
         RandomStrategy();
