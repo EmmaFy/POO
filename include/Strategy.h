@@ -4,7 +4,7 @@
 #include <vector>
 
 class UltimateBoard;
-struct Move;
+class Move;
 
 struct Strategy {
     virtual ~Strategy() = default;

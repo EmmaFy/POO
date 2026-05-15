@@ -9,6 +9,7 @@ class RandomStrategy : public  Strategy
     public:
         RandomStrategy();
         ~RandomStrategy();
+
         Move chooseMove(const UltimateBoard& board);
 };
 

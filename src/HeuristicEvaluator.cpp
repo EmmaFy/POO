@@ -1,6 +1,6 @@
 #include "HeuristicEvaluator.h"
-#include "../include/UltimateBoard.h"
-#include "../include/SmallBoard.h"
+#include "UltimateBoard.h"
+#include "SmallBoard.h"
 
 #include <array>
 

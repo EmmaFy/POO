@@ -9,8 +9,8 @@ class UltimateBoard
 {
     private:
         SmallBoard m_boards;
-        SmallBoard m_result;
-        int m_forcedBoards;
+        SmallBoard m_result; // retourne le résultat pour chaque grille ainsi que le résultat total
+        int m_forcedBoards; // 0..8 = sous-grille forcée, -1 = libre
         Cell m_currentPlayer;
 
     public:

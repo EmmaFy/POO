@@ -1,6 +1,6 @@
-#include "../include/MinMaxStrategy.h"
-#include "../include/UltimateBoard.h"
-#include "../include/Evaluator.h"
+#include "MinMaxStrategy.h"
+#include "UltimateBoard.h"
+#include "Evaluator.h"
 
 #include <algorithm>
 #include <limits>
