@@ -41,16 +41,16 @@
 		</Linker>
 		<Unit filename="include/Cell.h" />
 		<Unit filename="include/GameAdapter.h" />
-		<Unit filename="include/IStrategy.h" />
+		<Unit filename="include/HeuristicEvaluator.h" />
+		<Unit filename="include/MinMaxStrategy.h" />
 		<Unit filename="include/Move.h" />
 		<Unit filename="include/RandomStrategy.h" />
 		<Unit filename="include/SmallBoard.h" />
+		<Unit filename="include/Strategy.h" />
 		<Unit filename="include/UltimateBoard.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="main.h" />
-		<Unit filename="src/Cell.cpp" />
 		<Unit filename="src/GameAdapter.cpp" />
-		<Unit filename="src/IStrategy.cpp" />
 		<Unit filename="src/Move.cpp" />
 		<Unit filename="src/RandomStrategy.cpp" />
 		<Unit filename="src/SmallBoard.cpp" />
