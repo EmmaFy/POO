@@ -41,8 +41,11 @@
 		</Linker>
 		<Unit filename="include/Cell.h" />
 		<Unit filename="include/GameAdapter.h" />
+<<<<<<< HEAD
 		<Unit filename="include/HeuristicEvaluator.h" />
 		<Unit filename="include/MinMaxStrategy.h" />
+=======
+>>>>>>> a379cd69752e11c400b0ddcfa9c98cdf04a54db7
 		<Unit filename="include/Move.h" />
 		<Unit filename="include/RandomStrategy.h" />
 		<Unit filename="include/SmallBoard.h" />

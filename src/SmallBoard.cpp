@@ -10,7 +10,7 @@ SmallBoard::~SmallBoard()
     //dtor
 }
 
-bool SmallBoard::play(int pos, Cell p) {
+bool SmallBoard::play(GameMove m, Cell p) {
     return false;
 }
 

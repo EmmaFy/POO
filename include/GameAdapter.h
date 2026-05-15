@@ -1,8 +1,11 @@
+#pragma once
+
 #ifndef GAMEADAPTER_H
 #define GAMEADAPTER_H
 
 #include "UltimateBoard.h"
 #include "Strategy.h"
+#include "Move.h"
 
 class GameAdapter {
 private:
@@ -13,13 +16,14 @@ public:
     GameAdapter(Strategy* s);
 
     // Getter Setter
-    UltimateBoard getBoard() const;
-    void setBoard(UltimateBoard board);
+    //UltimateBoard getBoard() const;
+    //void setBoard(UltimateBoard board);
 
     // Methods
-    void onOpponentMove(Move m);
-    Move computeOurMove();
-    const UltimateBoard& getBoard() const { return board; }
+    void onOpponentMove(GameMove m);
+    GameMove computeOurMove();
+    const UltimateBoard& getBoard() const;
+    bool isGameOver() const;
 };
 
 #endif

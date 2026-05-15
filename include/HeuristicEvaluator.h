@@ -1,19 +1,17 @@
-#ifndef HEURISTICEVALUATOR_H
-#define HEURISTICEVALUATOR_H
+#ifndef HEURISTIC_EVALUATOR_H
+#define HEURISTIC_EVALUATOR_H
 
+#include "Evaluator.h"
 
-class HeuristicEvaluator
-{
+class SmallBoard;
 
-    private:
-        int m_weights[];
+class HeuristicEvaluator : public Evaluator {
 
-    public:
-        HeuristicEvaluator();
-        ~HeuristicEvaluator();
+private:
+    int linePotential(const SmallBoard& sb, Cell player) const;
 
-        int getweights[]() { return m_weights[]; }
-        void setweights[](int val) { m_weights[] = val; }
+public:
+    int evaluate(const UltimateBoard& board, Cell player) const override;
 };
 
-#endif // HEURISTICEVALUATOR_H
+#endif
