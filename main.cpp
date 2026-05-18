@@ -23,7 +23,10 @@ int main()
             GameMove gameMove;
             game.getMove(gameMove);
             std::cerr << "IA adverse joue : " << gameMove.row << " " << gameMove.col << std::endl;
-            adapter.onOpponentMove(gameMove);
+
+            if (gameMove.row != -1 && gameMove.col != -1) {
+                adapter.onOpponentMove(gameMove); // on ignore, à nous de jouer
+            }
 
             // Send your move
             GameMove myMove = adapter.computeOurMove(); // met aussi à jour la grille
