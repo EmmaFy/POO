@@ -11,12 +11,12 @@ int main()
     game.initialize(10, Level::EASY_1, Mode::DEBUG, false, "Pseudo");
 
     Evaluator* evaluator = new HeuristicEvaluator();
-    Strategy* myIA = new MinimaxStrategy(5, evaluator);
-
-    GameAdapter adapter(myIA);
 
     while (!game.isAllGameFinish())
     {
+        Strategy* myIA = new MinimaxStrategy(4, evaluator);
+        GameAdapter adapter(myIA);
+
         while (!game.isFinish())
         {
             // Get IA move
@@ -32,10 +32,8 @@ int main()
             std::cerr << "Envoi du coup : " << myMove.row << " " << myMove.col << std::endl;
             game.setMove(myMove);
         }
+        delete myIA;
     }
-
-    delete myIA;
     delete evaluator;
-
     return 0;
 }
