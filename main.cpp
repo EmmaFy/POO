@@ -21,11 +21,9 @@ int main()
         {
             // Get IA move
             GameMove gameMove;
-            if (game.getMove(gameMove))
-            {
-                std::cerr << "IA adverse joue : " << gameMove.row << " " << gameMove.col << std::endl;
-                adapter.onOpponentMove(gameMove);
-            }
+            game.getMove(gameMove);
+            std::cerr << "IA adverse joue : " << gameMove.row << " " << gameMove.col << std::endl;
+            adapter.onOpponentMove(gameMove);
 
             // Send your move
             GameMove myMove = adapter.computeOurMove(); // met aussi à jour la grille

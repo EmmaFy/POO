@@ -36,9 +36,13 @@ std::vector<Move> UltimateBoard::getLegalMoves() const {
     for (int r = 0; r < 9; ++r) {
         for (int c = 0; c < 9; ++c) {
             int bR = r / 3, bC = c / 3;
+
             if (m_forcedRow != -1 && (bR != m_forcedRow || bC != m_forcedCol)) continue;
+
             const SmallBoard& sb = m_boards[bR][bC];
-            if (!sb.isComplete() && sb.getCell(r % 3, c % 3) == Cell::EMPTY)
+            int localIndex = (r % 3) * 3 + (c % 3);
+
+            if (!sb.isComplete() && sb.getCell(localIndex) == Cell::EMPTY)
                 moves.push_back(Move(r, c));
         }
     }
