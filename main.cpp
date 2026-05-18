@@ -8,7 +8,7 @@
 int main()
 {
     // Game initialization
-    game.initialize(10, Level::EASY_1, Mode::DEBUG, false, "Pseudo");
+    game.initialize(10, Level::EASY_2, Mode::ARENA, false, "Pseudo");
 
     Evaluator* evaluator = new HeuristicEvaluator();
 
