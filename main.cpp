@@ -4,17 +4,18 @@
 #include "MinMaxStrategy.h"
 #include "HeuristicEvaluator.h"
 #include "GameAdapter.h"
+#include "MCTStrategy.h"
 
 int main()
 {
     // Game initialization
-    game.initialize(10, Level::EASY_2, Mode::ARENA, false, "Pseudo");
+    game.initialize(10, Level::MEDIUM_2, Mode::ARENA, false, "Pseudo");
 
     Evaluator* evaluator = new HeuristicEvaluator();
 
     while (!game.isAllGameFinish())
     {
-        Strategy* myIA = new MinimaxStrategy(4, evaluator);
+        Strategy* myIA = new MCTStrategy(5000, 1.41); //new MinimaxStrategy(4, evaluator);
         GameAdapter adapter(myIA);
 
         while (!game.isFinish())
