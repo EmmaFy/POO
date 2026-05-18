@@ -1,7 +1,8 @@
 #include <iostream>
 #include "main.h"
 #include "Strategy.h"
-#include "RandomStrategy.h"
+#include "MinMaxStrategy.h"
+#include "HeuristicEvaluator.h"
 #include "GameAdapter.h"
 
 int main()
@@ -9,7 +10,9 @@ int main()
     // Game initialization
     game.initialize(10, Level::EASY_1, Mode::DEBUG, false, "Pseudo");
 
-    Strategy* myIA = new RandomStrategy();
+    Evaluator* evaluator = new HeuristicEvaluator();
+    Strategy* myIA = new MinimaxStrategy(5, evaluator);
+
     GameAdapter adapter(myIA);
 
     while (!game.isAllGameFinish())
@@ -32,5 +35,7 @@ int main()
     }
 
     delete myIA;
+    delete evaluator;
+
     return 0;
 }
