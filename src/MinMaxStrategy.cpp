@@ -16,7 +16,7 @@ namespace {
 MinimaxStrategy::MinimaxStrategy(int maxDepth, Evaluator* evaluator)
     : m_maxDepth(maxDepth)
     , m_evaluator(evaluator)
-    , m_rootPlayer(Cell::Empty)
+    , m_rootPlayer(Cell::EMPTY)
 {
 }
 

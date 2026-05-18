@@ -9,26 +9,28 @@ int main()
     // Game initialization
     game.initialize(10, Level::EASY_1, Mode::DEBUG, false, "Pseudo");
 
+    Strategy* myIA = new RandomStrategy();
+    GameAdapter adapter(myIA);
+
     while (!game.isAllGameFinish())
     {
-        GameMove myMove{0, 0};
-
         while (!game.isFinish())
         {
             // Get IA move
             GameMove gameMove;
-            game.getMove(gameMove);
-            std::cerr << "IA move " << gameMove.row << " " << gameMove.col << std::endl;
+            if (game.getMove(gameMove))
+            {
+                std::cerr << "IA adverse joue : " << gameMove.row << " " << gameMove.col << std::endl;
+                adapter.onOpponentMove(gameMove);
+            }
 
             // Send your move
-            Strategy* myIA = new RandomStrategy();
-            GameAdapter adapter(myIA);
-            GameMove myMove=RandomStrategy();
-            std::cerr << "Send move " << myMove.row << " " << myMove.col << std::endl;
+            GameMove myMove = adapter.computeOurMove(); // met aussi à jour la grille
+            std::cerr << "Envoi du coup : " << myMove.row << " " << myMove.col << std::endl;
             game.setMove(myMove);
         }
-        delete myIA;
     }
 
+    delete myIA;
     return 0;
 }

@@ -6,6 +6,7 @@
 #include "UltimateBoard.h"
 #include "Strategy.h"
 #include "Move.h"
+#include "../main.h"
 
 class GameAdapter {
 private:

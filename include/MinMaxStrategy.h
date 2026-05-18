@@ -2,7 +2,7 @@
 #define MINIMAX_STRATEGY_H
 
 #include "../include/Strategy.h"
-#include "../include/Types.h"
+#include "Cell.h"
 
 class Evaluator;
 

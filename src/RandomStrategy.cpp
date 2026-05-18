@@ -1,4 +1,5 @@
 #include "RandomStrategy.h"
+#include "UltimateBoard.h"
 #include <vector>
 #include <random>
 #include <algorithm>
@@ -13,11 +14,10 @@ RandomStrategy::~RandomStrategy()
     //dtor
 }
 
-Move RandomStrategy::chooseMove(const UltimateBoard& board) override
+Move RandomStrategy::chooseMove(const UltimateBoard& board)
 {
         std::vector<Move> legalMoves = board.getLegalMoves();
 
-        // Sécurité : si aucun coup n'est possible, on retourne un coup par défaut
         if (legalMoves.empty()) {
             return Move{-1, -1};
         }

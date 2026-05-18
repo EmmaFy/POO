@@ -1,14 +1,14 @@
 #ifndef STRATEGY_HPP
 #define STRATEGY_HPP
 
-#include <vector>
+#include "Move.h"
 
 class UltimateBoard;
-class Move;
 
-struct Strategy {
-    virtual ~Strategy() = default;
-    virtual Move chooseMove(const UltimateBoard& board) = 0;
+class Strategy {
+    public :
+        virtual ~Strategy() = default;
+        virtual Move chooseMove(const UltimateBoard& board) = 0;
 };
 
 #endif

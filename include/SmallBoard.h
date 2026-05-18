@@ -4,30 +4,24 @@
 #include <vector>
 #include "Cell.h"
 
-class GameMove;
+class SmallBoard {
+private:
+    Cell m_cells[9];
+    Cell m_winner;
 
-class SmallBoard
-{
-    private:
-        Cell m_cells;
-        Cell m_winner;
+    Cell computeWinner() const;
 
-    public:
-        SmallBoard();
-        ~SmallBoard();
+public:
+    SmallBoard();
 
-        // Getter Setter
-        Cell getCells() { return m_cells; }
-        void setCells(Cell val) { m_cells = val; }
-        Cell getWinner() { return m_winner; }
-        void setWinner(Cell val) { m_winner = val; }
+    bool play(int row, int col, Cell player);
 
-        // Methods
-        bool play(GameMove move, Cell p);
-        Cell getWinner() const;
-        bool isComplete() const;
-        std::vector<int> getLegalMoves() const;
-        SmallBoard clone() const;
+    Cell getCell(int idx)         const { return m_cells[idx]; }
+    Cell getCell(int r, int c)    const { return m_cells[r * 3 + c]; }
+    Cell getWinner()              const { return m_winner; }
+    bool isComplete()             const;
+    std::vector<int> getLegalMoves() const;
+    SmallBoard clone()            const { return *this; }
 };
 
-#endif // SMALLBOARD_H
+#endif

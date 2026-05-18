@@ -1,90 +1,54 @@
 #include "UltimateBoard.h"
 
 UltimateBoard::UltimateBoard()
-:forcedBoardRow(-1), forcedBoardCol(-1), currentPlayer(Cell::X)
-{
-    //ctor
+    : m_forcedRow(-1), m_forcedCol(-1), m_currentPlayer(Cell::X) {}
+
+bool UltimateBoard::play(Move move) {
+    int bR = move.getRow() / 3,  bC = move.getCol() / 3;
+    int lR = move.getRow() % 3,  lC = move.getCol() % 3;
+
+    // V√©rifier contrainte de grille forc√©e
+    if (m_forcedRow != -1 && (bR != m_forcedRow || bC != m_forcedCol)) return false;
+    if (m_boards[bR][bC].isComplete()) return false;
+    if (!m_boards[bR][bC].play(lR, lC, m_currentPlayer)) return false;
+
+    // Mettre √† jour la m√©ta-grille si sous-grille remport√©e
+    Cell sbWin = m_boards[bR][bC].getWinner();
+    if (sbWin != Cell::EMPTY)
+        m_result.play(bR, bC, sbWin);
+
+    // Prochaine grille forc√©e = position locale jou√©e
+    if (!m_boards[lR][lC].isComplete()) {
+        m_forcedRow = lR;
+        m_forcedCol = lC;
+    } else {
+        // Cible termin√©e ‚Üí libre
+        m_forcedRow = -1;
+        m_forcedCol = -1;
+    }
+
+    m_currentPlayer = opponent(m_currentPlayer);
+    return true;
 }
 
-UltimateBoard::~UltimateBoard()
-{
-    //dtor
-}
-
-//bool UltimateBoard::play(Move move) {
-//    return false;
-//}
-
-//std::vector<Move> UltimateBoard::getLegalMoves() const {
-//    return std::vector<Move>();
-//}
-//
-//Cell UltimateBoard::getWinner() const {
-//    return Cell::EMPTY;
-//}
-
-UltimateBoard UltimateBoard::clone() const {
-    return *this;
-}
-
-Cell UltimateBoard::getWinner() const
-{
-    return result.getWinner();
-}
-
-std::vector<Move> UltimateBoard::getLegalMoves() const
-{
+std::vector<Move> UltimateBoard::getLegalMoves() const {
     std::vector<Move> moves;
-    for (int r = 0; r < 9; r++) {
-        for (int c = 0; c < 9; c++) {
+    for (int r = 0; r < 9; ++r) {
+        for (int c = 0; c < 9; ++c) {
             int bR = r / 3, bC = c / 3;
-            // VÈrifier si la grille est celle imposÈe
-            if (forcedBoardRow != -1 && (bR != forcedBoardRow || bC != forcedBoardCol)) continue;
-            // VÈrifier si la petite grille est dÈj‡ finie
-            if (boards[bR][bC].getWinner() != Cell::Empty || boards[bR][bC].isComplete()) continue;
-            // VÈrifier si la case est vide
-            if (boards[bR][bC].getCell(r % 3, c % 3) == Cell::Empty) {
-                moves.push_back({r, c});
-            }
+            if (m_forcedRow != -1 && (bR != m_forcedRow || bC != m_forcedCol)) continue;
+            const SmallBoard& sb = m_boards[bR][bC];
+            if (!sb.isComplete() && sb.getCell(r % 3, c % 3) == Cell::EMPTY)
+                moves.push_back(Move(r, c));
         }
     }
     return moves;
 }
 
-bool UltimateBoardisFinished() const
-{
-    return getWinner() != Cell::Empty || getLegalMoves().empty();
+Cell UltimateBoard::getWinner() const {
+    return m_result.getWinner();
 }
 
-bool UltimateBoard::play(Move m)
-{
-    // VÈrifier si le mouvement est dans la grille forcÈe
-    int bR = m.row / 3;
-    int bC = m.col / 3;
-    int localR = m.row % 3;
-    int localC = m.col % 3;
-
-    if (forcedBoardRow != -1 && (bR != forcedBoardRow || bC != forcedBoardCol)) return false;
-    if (boards[bR][bC].getWinner() != Cell::Empty) return false;
-
-    // Jouer le coup
-    if (!boards[bR][bC].play(localR, localC, currentPlayer)) return false;
-
-    // Mettre ‡ jour la grille de rÈsultat globale
-    if (boards[bR][bC].getWinner() != Cell::Empty) {
-        result.play(bR, bC, boards[bR][bC].getWinner());
-    }
-
-    // DÈterminer la prochaine grille forcÈe
-    if (boards[localR][localC].getWinner() == Cell::Empty && !boards[localR][localC].isComplete()) {
-        forcedBoardRow = localR;
-        forcedBoardCol = localC;
-    } else {
-        forcedBoardRow = -1; // Libre de jouer n'importe o˘
-        forcedBoardCol = -1;
-    }
-
-    // Changer de joueur
-    currentPlayer = (currentPlayer == Cell::X) ? Cell::O : Cell::X;
-    return true;
+bool UltimateBoard::isFinished() const {
+    return getWinner() != Cell::EMPTY || getLegalMoves().empty();
 }
