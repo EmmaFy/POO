@@ -40,12 +40,11 @@
 			<Add library="./libUTTTLib.a" />
 		</Linker>
 		<Unit filename="include/Cell.h" />
+		<Unit filename="include/Evaluator.h" />
 		<Unit filename="include/GameAdapter.h" />
-<<<<<<< HEAD
 		<Unit filename="include/HeuristicEvaluator.h" />
+		<Unit filename="include/MCTStrategy.h" />
 		<Unit filename="include/MinMaxStrategy.h" />
-=======
->>>>>>> a379cd69752e11c400b0ddcfa9c98cdf04a54db7
 		<Unit filename="include/Move.h" />
 		<Unit filename="include/RandomStrategy.h" />
 		<Unit filename="include/SmallBoard.h" />
@@ -54,7 +53,9 @@
 		<Unit filename="main.cpp" />
 		<Unit filename="main.h" />
 		<Unit filename="src/GameAdapter.cpp" />
-		<Unit filename="src/Move.cpp" />
+		<Unit filename="src/HeuristicEvaluator.cpp" />
+		<Unit filename="src/MCTStrategy.cpp" />
+		<Unit filename="src/MinMaxStrategy.cpp" />
 		<Unit filename="src/RandomStrategy.cpp" />
 		<Unit filename="src/SmallBoard.cpp" />
 		<Unit filename="src/UltimateBoard.cpp" />

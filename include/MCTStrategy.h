@@ -5,54 +5,58 @@
 #include "Move.h"
 #include "Cell.h"
 #include "UltimateBoard.h"
+#include "SmallBoard.h"
 
 #include <vector>
 #include <random>
 
 /**
- * @brief Stratégie Monte Carlo Tree Search.
+ * @brief Stratégie Monte Carlo Tree Search avec rollouts heuristiques.
  *
  * À chaque appel de chooseMove, on construit un arbre de recherche en
  * effectuant N itérations des 4 phases MCTS (selection, expansion, simulation,
  * backpropagation), puis on retourne le coup correspondant à l'enfant le plus
  * visité de la racine.
+ *
+ * Les rollouts ne sont pas purement aléatoires : ils appliquent des règles
+ * tactiques de base (compléter ses propres alignements, bloquer ceux de
+ * l'adversaire) pour produire des simulations plus représentatives.
  */
 class MCTStrategy : public Strategy {
 
 public:
     /**
-     * @param iterations Nombre d'itérations MCTS par coup (typique: 5000-20000).
-     *                   Plus c'est élevé, plus l'IA est forte mais lente.
-     * @param explorationC Constante d'exploration UCT (typique: sqrt(2) ~ 1.41).
-     *                     Plus c'est élevé, plus on explore (vs exploiter).
+     * @param iterations Nombre d'itérations MCTS par coup (3000-10000 typique).
+     * @param explorationC Constante d'exploration UCT (~1.41 = sqrt(2)).
+     * @param rolloutRandomness Probabilité [0..1] de jouer aléatoire malgré
+     *                          les heuristiques (typiquement 0.1).
      */
-    MCTStrategy(int iterations = 5000, double explorationC = 1.41);
+    MCTStrategy(int iterations = 5000,
+                double explorationC = 1.41,
+                double rolloutRandomness = 0.1);
     ~MCTStrategy() override = default;
 
     Move chooseMove(const UltimateBoard& board) override;
 
 private:
-    /**
-     * Un nœud de l'arbre MCTS. Chaque nœud représente un état du plateau
-     * atteint après qu'un certain joueur a fait un certain coup.
-     */
     struct Node {
-        UltimateBoard state;            // état du plateau à ce nœud
-        Move moveFromParent;            // le coup qui a mené ici
-        Cell playerWhoPlayed;           // qui a fait ce coup
-        Node* parent;                   // nul pour la racine
-        std::vector<Node*> children;    // enfants déjà créés
-        std::vector<Move> untriedMoves; // coups légaux pas encore explorés
-        double wins;                    // somme des scores (1.0 victoire, 0.5 nul, 0.0 défaite)
-        int visits;                     // nombre de simulations passant par ce nœud
+        UltimateBoard state;
+        Move moveFromParent;
+        Cell playerWhoPlayed;
+        Node* parent;
+        std::vector<Node*> children;
+        std::vector<Move> untriedMoves;
+        double wins;
+        int visits;
 
         Node(const UltimateBoard& s, Move m, Cell p, Node* par);
-        ~Node();  // détruit récursivement tous les enfants
+        ~Node();
     };
 
     int m_iterations;
     double m_C;
-    std::mt19937 m_rng;  // générateur pseudo-aléatoire pour expansion et rollouts
+    double m_rolloutRandomness;
+    std::mt19937 m_rng;
 
     // Les 4 phases MCTS
     Node* select(Node* root);
@@ -60,9 +64,14 @@ private:
     Cell  rollout(UltimateBoard board);
     void  backpropagate(Node* node, Cell winner);
 
-    // Helpers
+    // Helpers MCTS
     Node*  bestUCTChild(Node* node, double C) const;
     static double scoreFor(Cell winner, Cell playerWhoPlayed);
+
+    // Helpers pour les rollouts heuristiques
+    Move chooseRolloutMove(const UltimateBoard& board,
+                           const std::vector<Move>& legalMoves);
+    static bool wouldCompleteLine(const SmallBoard& sb, int localPos, Cell player);
 };
 
 #endif // MCT_STRATEGY_H

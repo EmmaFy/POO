@@ -11,6 +11,28 @@
 namespace {
     constexpr int WIN_SCORE  =  1000000;
     constexpr int LOSS_SCORE = -1000000;
+
+    // Score de priorité d'un coup pour le move ordering.
+    // Plus le score est élevé, plus le coup est exploré en premier
+    // (et plus alpha-beta élague tôt).
+    //
+    // Heuristique : produit du poids de la position locale dans la sous-grille
+    // par le poids de la sous-grille dans le grand plateau.
+    // Centre = 4, coin = 3, bord = 2.
+    int moveOrderScore(const Move& m) {
+        static const int W[9] = {3, 2, 3, 2, 4, 2, 3, 2, 3};
+        int localPos = (m.getRow() % 3) * 3 + (m.getCol() % 3);
+        int bigPos   = (m.getRow() / 3) * 3 + (m.getCol() / 3);
+        return W[localPos] * W[bigPos];
+
+    }
+
+    void sortMovesByPriority(std::vector<Move>& moves) {
+        std::sort(moves.begin(), moves.end(),
+                  [](const Move& a, const Move& b) {
+                      return moveOrderScore(a) > moveOrderScore(b);
+                  });
+    }
 }
 
 MinimaxStrategy::MinimaxStrategy(int maxDepth, Evaluator* evaluator)
@@ -30,10 +52,22 @@ Move MinimaxStrategy::chooseMove(const UltimateBoard& board)
     int alpha = LOSS_SCORE - 1;
     int beta  = WIN_SCORE  + 1;
 
+    // Récupère les coups légaux et les trie par priorité
+    std::vector<Move> moves = board.getLegalMoves();
+    sortMovesByPriority(moves);
+
+    // Sécurité : si la liste était vide, on retourne un coup invalide
+    if (moves.empty()) {
+        return bestMove;
+    }
+    // Garde-fou : on initialise bestMove avec le premier coup légal,
+    // au cas où tous les scores seraient à -infinity
+    bestMove = moves[0];
+
     // On itère sur les coups légaux à la racine et on garde le meilleur.
     // C'est une "racine de minimax" séparée du récursif : ça permet
     // de remonter directement le Move à faire.
-    for (const Move& move : board.getLegalMoves()) {
+    for (const Move& move : moves) {
         UltimateBoard copy = board;       // clone via constructeur de copie
         copy.play(move);
 

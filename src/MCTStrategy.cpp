@@ -16,15 +16,12 @@ MCTStrategy::Node::Node(const UltimateBoard& s, Move m, Cell p, Node* par)
     , wins(0.0)
     , visits(0)
 {
-    // On ne calcule les coups légaux que si la partie n'est pas finie.
-    // Sinon untriedMoves reste vide et le nœud est terminal.
     if (!state.isFinished()) {
         untriedMoves = state.getLegalMoves();
     }
 }
 
 MCTStrategy::Node::~Node() {
-    // Destruction récursive : on libère tout l'arbre depuis cette racine.
     for (Node* c : children) {
         delete c;
     }
@@ -34,51 +31,37 @@ MCTStrategy::Node::~Node() {
 //                            MCTStrategy
 // ============================================================================
 
-MCTStrategy::MCTStrategy(int iterations, double explorationC)
+MCTStrategy::MCTStrategy(int iterations, double explorationC, double rolloutRandomness)
     : m_iterations(iterations)
     , m_C(explorationC)
-    , m_rng(std::random_device{}())  // seed non déterministe
+    , m_rolloutRandomness(rolloutRandomness)
+    , m_rng(std::random_device{}())
 {
 }
 
 Move MCTStrategy::chooseMove(const UltimateBoard& board) {
-    // Gestion des cas dégénérés
     std::vector<Move> legalMoves = board.getLegalMoves();
     if (legalMoves.empty()) {
-        return Move(-1, -1);  // ne devrait pas arriver si l'adapter check isFinished
+        return Move(-1, -1);
     }
     if (legalMoves.size() == 1) {
-        return legalMoves[0];  // pas la peine de chercher s'il n'y a qu'un coup
+        return legalMoves[0];
     }
 
-    // Création de la racine. Le "joueur qui a joué pour atteindre la racine"
-    // est conventionnellement l'opposant du joueur courant, puisque c'est notre
-    // tour maintenant. Cette valeur n'est utilisée que pour la backpropagation
-    // au niveau racine, mais elle assure la cohérence de l'algorithme.
     Cell currentPlayer  = board.getCurrentPlayer();
     Cell previousPlayer = opponent(currentPlayer);
 
     Node* root = new Node(board, Move(-1, -1), previousPlayer, nullptr);
 
-    // Boucle principale MCTS
     for (int i = 0; i < m_iterations; ++i) {
-        // Phase 1 : Selection
         Node* node = select(root);
-
-        // Phase 2 : Expansion (si possible)
         if (!node->untriedMoves.empty()) {
             node = expand(node);
         }
-
-        // Phase 3 : Simulation
         Cell winner = rollout(node->state);
-
-        // Phase 4 : Backpropagation
         backpropagate(node, winner);
     }
 
-    // Choix final : on prend l'enfant le plus VISITÉ de la racine
-    // (statistiquement plus robuste que le meilleur taux de victoires)
     Node* best = nullptr;
     int maxVisits = -1;
     for (Node* child : root->children) {
@@ -89,70 +72,166 @@ Move MCTStrategy::chooseMove(const UltimateBoard& board) {
     }
 
     Move chosen = best ? best->moveFromParent : legalMoves[0];
-
-    // Libération de tout l'arbre
     delete root;
-
     return chosen;
 }
 
-// ----------------------------------------------------------------------------
-// Phase 1 : Selection — descend dans l'arbre selon UCT
-// ----------------------------------------------------------------------------
 MCTStrategy::Node* MCTStrategy::select(Node* root) {
     Node* node = root;
-    // On descend tant que :
-    //  - tous les coups du nœud ont été explorés (pas de untriedMoves)
-    //  - ET le nœud a des enfants (n'est pas une feuille terminale)
     while (node->untriedMoves.empty() && !node->children.empty()) {
         node = bestUCTChild(node, m_C);
     }
     return node;
 }
 
-// ----------------------------------------------------------------------------
-// Phase 2 : Expansion — ajoute un nouvel enfant pour un coup non exploré
-// ----------------------------------------------------------------------------
 MCTStrategy::Node* MCTStrategy::expand(Node* node) {
-    // Choix aléatoire d'un coup non encore exploré
     std::uniform_int_distribution<int> dist(0, static_cast<int>(node->untriedMoves.size()) - 1);
     int idx = dist(m_rng);
     Move move = node->untriedMoves[idx];
 
-    // Retire ce coup de la liste (swap-pop : O(1) au lieu de O(n))
     std::swap(node->untriedMoves[idx], node->untriedMoves.back());
     node->untriedMoves.pop_back();
 
-    // Construit l'état après le coup
     UltimateBoard newState = node->state;
-    Cell playerWhoPlayed = newState.getCurrentPlayer();  // celui qui joue ICI
+    Cell playerWhoPlayed = newState.getCurrentPlayer();
     newState.play(move);
 
-    // Crée l'enfant
     Node* child = new Node(newState, move, playerWhoPlayed, node);
     node->children.push_back(child);
     return child;
 }
 
-// ----------------------------------------------------------------------------
-// Phase 3 : Simulation (rollout) — partie aléatoire jusqu'à la fin
-// ----------------------------------------------------------------------------
 Cell MCTStrategy::rollout(UltimateBoard board) {
-    // Note : board est passé par valeur (copie), on peut le modifier librement.
-    // On joue des coups aléatoires jusqu'à ce que la partie soit terminée.
     while (!board.isFinished()) {
         std::vector<Move> moves = board.getLegalMoves();
-        if (moves.empty()) break;  // sécurité (ne devrait pas arriver)
-
-        std::uniform_int_distribution<int> dist(0, static_cast<int>(moves.size()) - 1);
-        board.play(moves[dist(m_rng)]);
+        if (moves.empty()) break;
+        Move chosen = chooseRolloutMove(board, moves);
+        board.play(chosen);
     }
-    return board.getWinner();  // Cell::X, Cell::O ou Cell::EMPTY (nul)
+    return board.getWinner();
 }
 
-// ----------------------------------------------------------------------------
-// Phase 4 : Backpropagation — remonte le résultat le long du chemin
-// ----------------------------------------------------------------------------
+
+// SÉLECTION DE COUP EN ROLLOUT
+
+Move MCTStrategy::chooseRolloutMove(const UltimateBoard& board,
+                                     const std::vector<Move>& legalMoves) {
+    // 1. Aléatoire pur avec probabilité m_rolloutRandomness (typiquement 10%)
+    std::uniform_real_distribution<double> probDist(0.0, 1.0);
+    if (probDist(m_rng) < m_rolloutRandomness) {
+        std::uniform_int_distribution<int> dist(0, static_cast<int>(legalMoves.size()) - 1);
+        return legalMoves[dist(m_rng)];
+    }
+
+    Cell player = board.getCurrentPlayer();
+    Cell opp    = opponent(player);
+
+    // 2. Si un coup gagne immédiatement une sous-grille → on le prend
+    for (const Move& m : legalMoves) {
+        int bigIdx   = (m.getRow() / 3) * 3 + (m.getCol() / 3);
+        int localPos = (m.getRow() % 3) * 3 + (m.getCol() % 3);
+        const SmallBoard& sb = board.getSmallBoard(bigIdx);
+        if (wouldCompleteLine(sb, localPos, player)) {
+            return m;
+        }
+    }
+
+    // 3. Si l'adversaire menace de gagner une sous-grille → on bloque
+    for (const Move& m : legalMoves) {
+        int bigIdx   = (m.getRow() / 3) * 3 + (m.getCol() / 3);
+        int localPos = (m.getRow() % 3) * 3 + (m.getCol() % 3);
+        const SmallBoard& sb = board.getSmallBoard(bigIdx);
+        if (wouldCompleteLine(sb, localPos, opp)) {
+            return m;
+        }
+    }
+
+    // 4. Sinon : sélection PONDÉRÉE par la qualité du forçage
+    // Pour chaque coup, on calcule un poids qui prend en compte :
+    //  - position dans la sous-grille (centre > coin > bord)
+    //  - où le coup envoie l'adversaire (préférable : sous-grille où on a l'avantage)
+    //  - éviter d'envoyer l'adversaire vers une sous-grille terminée (choix libre = mauvais)
+
+    static const double POS_BONUS[9] = {
+        1.2, 0.9, 1.2,   // coins forts, bords moyens
+        0.9, 1.5, 0.9,   // centre très fort
+        1.2, 0.9, 1.2
+    };
+
+    std::vector<double> weights(legalMoves.size());
+    for (size_t i = 0; i < legalMoves.size(); ++i) {
+        const Move& m = legalMoves[i];
+        int localPos = (m.getRow() % 3) * 3 + (m.getCol() % 3);
+
+        // Bonus de position locale (préférer centre, coins)
+        double w = POS_BONUS[localPos];
+
+        // Pénalité/bonus selon où on envoie l'adversaire
+        // localPos est aussi l'indice de la sous-grille où l'adversaire sera forcé
+        const SmallBoard& targetSb = board.getSmallBoard(localPos);
+
+        if (targetSb.isComplete()) {
+            // Cible déjà finie → adversaire aura le choix libre = mauvais pour nous
+            w *= 0.4;
+        } else {
+            // Compter qui domine dans la sous-grille cible
+            int myCount = 0, oppCount = 0;
+            for (int p = 0; p < 9; ++p) {
+                Cell c = targetSb.getCell(p);
+                if (c == player) ++myCount;
+                else if (c == opp) ++oppCount;
+            }
+            // Si l'adversaire domine, on évite de l'y envoyer
+            if (oppCount > myCount + 1) w *= 0.5;
+            else if (oppCount > myCount) w *= 0.8;
+            // Si on domine, c'est neutre/légèrement bon (l'opp est piégé mais reste dangereux)
+        }
+
+        weights[i] = w;
+    }
+
+    // Tirage aléatoire pondéré par les poids calculés
+    double totalWeight = 0.0;
+    for (double w : weights) totalWeight += w;
+
+    std::uniform_real_distribution<double> wDist(0.0, totalWeight);
+    double r = wDist(m_rng);
+    double cumulative = 0.0;
+    for (size_t i = 0; i < legalMoves.size(); ++i) {
+        cumulative += weights[i];
+        if (r <= cumulative) return legalMoves[i];
+    }
+    return legalMoves.back();  // fallback sécurité
+}
+
+bool MCTStrategy::wouldCompleteLine(const SmallBoard& sb, int localPos, Cell player) {
+    static const int LINES[8][3] = {
+        {0,1,2}, {3,4,5}, {6,7,8},
+        {0,3,6}, {1,4,7}, {2,5,8},
+        {0,4,8}, {2,4,6}
+    };
+
+    for (int li = 0; li < 8; ++li) {
+        bool contains = false;
+        for (int k = 0; k < 3; ++k) {
+            if (LINES[li][k] == localPos) { contains = true; break; }
+        }
+        if (!contains) continue;
+
+        int countMine = 0;
+        bool blocked = false;
+        for (int k = 0; k < 3; ++k) {
+            int p = LINES[li][k];
+            if (p == localPos) continue;
+            Cell c = sb.getCell(p);
+            if (c == player) ++countMine;
+            else if (c != Cell::EMPTY) { blocked = true; break; }
+        }
+        if (!blocked && countMine == 2) return true;
+    }
+    return false;
+}
+
 void MCTStrategy::backpropagate(Node* node, Cell winner) {
     while (node != nullptr) {
         node->visits++;
@@ -161,13 +240,9 @@ void MCTStrategy::backpropagate(Node* node, Cell winner) {
     }
 }
 
-// ----------------------------------------------------------------------------
-// Sélection UCT : retourne l'enfant maximisant exploitation + exploration
-// ----------------------------------------------------------------------------
 MCTStrategy::Node* MCTStrategy::bestUCTChild(Node* node, double C) const {
     Node* best = nullptr;
     double bestScore = -std::numeric_limits<double>::infinity();
-
     double lnParentVisits = std::log(static_cast<double>(node->visits));
 
     for (Node* child : node->children) {
@@ -183,11 +258,8 @@ MCTStrategy::Node* MCTStrategy::bestUCTChild(Node* node, double C) const {
     return best;
 }
 
-// ----------------------------------------------------------------------------
-// Score d'un résultat pour un joueur donné
-// ----------------------------------------------------------------------------
 double MCTStrategy::scoreFor(Cell winner, Cell playerWhoPlayed) {
-    if (winner == playerWhoPlayed) return 1.0;  // victoire
-    if (winner == Cell::EMPTY)     return 0.5;  // nul
-    return 0.0;                                  // défaite
+    if (winner == playerWhoPlayed) return 1.0;
+    if (winner == Cell::EMPTY)     return 0.5;
+    return 0.0;
 }

@@ -15,7 +15,7 @@ int main()
 
     while (!game.isAllGameFinish())
     {
-        Strategy* myIA = new MCTStrategy(5000, 1.41); //new MinimaxStrategy(4, evaluator);
+        Strategy* myIA = new MCTStrategy(15000, 0.8);//new MinimaxStrategy(7, evaluator);//
         GameAdapter adapter(myIA);
 
         while (!game.isFinish())
