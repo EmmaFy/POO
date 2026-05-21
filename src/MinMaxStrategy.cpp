@@ -85,11 +85,11 @@ Move MinimaxStrategy::chooseMove(const UltimateBoard& board)
 
 int MinimaxStrategy::maximize(UltimateBoard& board, int depth, int alpha, int beta)
 {
-    // Cas de base 1 : la partie est finie, on retourne un score définitif.
+    // Cas 1 la partie est finie, on retourne un score définitif
     if (board.isFinished()) {
         return terminalScore(board);
     }
-    // Cas de base 2 : on a atteint la profondeur max, on évalue heuristiquement.
+    // Cas 2 on a atteint la profondeur max, on évalue heuristiquement
     if (depth == 0) {
         return m_evaluator->evaluate(board, m_rootPlayer);
     }
@@ -104,7 +104,7 @@ int MinimaxStrategy::maximize(UltimateBoard& board, int depth, int alpha, int be
         bestScore = std::max(bestScore, score);
 
         // Si on a déjà trouvé un coup au moins aussi bon
-        // que ce que l'adversaire nous laissera prendre, inutile d'explorer plus.
+        // que ce que l'adversaire nous laissera prendre, inutile d'explorer plus
         alpha = std::max(alpha, bestScore);
         if (alpha >= beta) {
             break;

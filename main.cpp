@@ -9,13 +9,14 @@
 int main()
 {
     // Game initialization
-    game.initialize(10, Level::MEDIUM_2, Mode::ARENA, false, "Pseudo");
+    game.initialize(10, Level::MEDIUM_1, Mode::ARENA, false, "Pseudo");
 
     Evaluator* evaluator = new HeuristicEvaluator();
 
     while (!game.isAllGameFinish())
     {
-        Strategy* myIA = new MCTStrategy(15000, 0.8);//new MinimaxStrategy(7, evaluator);//
+        Strategy* myIA = new MinimaxStrategy(7, evaluator);
+        //Strategy* myIA = new MCTStrategy(15000, 0.8);
         GameAdapter adapter(myIA);
 
         while (!game.isFinish())

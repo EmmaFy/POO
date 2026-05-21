@@ -46,7 +46,6 @@
 		<Unit filename="include/MCTStrategy.h" />
 		<Unit filename="include/MinMaxStrategy.h" />
 		<Unit filename="include/Move.h" />
-		<Unit filename="include/RandomStrategy.h" />
 		<Unit filename="include/SmallBoard.h" />
 		<Unit filename="include/Strategy.h" />
 		<Unit filename="include/UltimateBoard.h" />
@@ -56,7 +55,6 @@
 		<Unit filename="src/HeuristicEvaluator.cpp" />
 		<Unit filename="src/MCTStrategy.cpp" />
 		<Unit filename="src/MinMaxStrategy.cpp" />
-		<Unit filename="src/RandomStrategy.cpp" />
 		<Unit filename="src/SmallBoard.cpp" />
 		<Unit filename="src/UltimateBoard.cpp" />
 		<Extensions />
